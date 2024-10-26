@@ -48,6 +48,14 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
+        public IEnumerator TestBusOnChangeInline()
+        {
+            yield return null;
+            var bus = new Bus<Event1>((v) => Assert.AreEqual("Hello", v.StringValue));
+            bus.Value = new Event1 { StringValue = "Hello" };
+        }
+        
+        [UnityTest]
         public IEnumerator TestBusImplicitConversion()
         {
             yield return null;

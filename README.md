@@ -6,8 +6,9 @@
 - [Simple Example](#simple-example)
 - [Event Handling](#event-handling)
 - [Bus Creation](#bus-creation)
-- [Initial Value](#initial-value)
-- [Bus Manager](#bus-manager)
+  - [Inline Event Handling](#inline-event-handling)
+  - [Initial Value](#initial-value)
+  - [Bus Manager](#bus-manager)
 - [Install](#install)
   - [Install via Unity Package](#install-via-unity-package)
   - [Install via git URL](#install-via-git-url)
@@ -52,7 +53,26 @@ var bus = new Bus<StringEvent>();
 bus.Value = new StringEvent { Value = "Hello World" };
 ```
 
-### Initial Value
+#### Inline Event Handling
+
+You can handle events inline by passing a lambda function or a method to the constructor.
+
+```csharp
+var bus = new Bus<StringEvent>(e => Debug.Log(e.Value));
+bus.Value = new StringEvent { Value = "Hello World" };
+
+// or
+
+void HandleEvent(StringEvent e)
+{
+    Debug.Log(e.Value);
+}
+
+var bus = new Bus<StringEvent>(HandleEvent);
+bus.Value = new StringEvent { Value = "Hello World" };
+```
+
+#### Initial Value
 
 You can set the initial value of the bus by passing it to the constructor.
 
@@ -62,7 +82,7 @@ You can set the initial value of the bus by passing it to the constructor.
 var bus = new Bus<StringEvent>(new StringEvent { Value = "Hello World" });
 ```
 
-### Bus Manager
+#### Bus Manager
 
 You can manage multiple buses using the `BusManager` class.
 

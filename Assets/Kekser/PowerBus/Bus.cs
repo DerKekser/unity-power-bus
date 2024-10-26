@@ -5,6 +5,7 @@ namespace Kekser.PowerBus
     public class Bus<T> : IBus<T> where T : class
     {
         private BusManager _manager;
+        private Action<T> _onChange;
         
         public Bus(T initialValue = null, BusManager manager = null)
         {
@@ -12,8 +13,18 @@ namespace Kekser.PowerBus
             _manager.RegisterBus(this, initialValue);
         }
         
+        public Bus(Action<T> onChange, T initialValue = null, BusManager manager = null)
+        {
+            _manager = manager ?? BusManager.GlobalInstance;
+            _manager.RegisterBus(this, initialValue);
+            _onChange = onChange;
+            OnChange += _onChange;
+        }
+        
         ~Bus()
         {
+            if (_onChange != null)
+                OnChange -= _onChange;
             _manager.UnregisterBus(this);
         }
 
