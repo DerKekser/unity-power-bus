@@ -2,42 +2,46 @@ using System;
 
 namespace Kekser.PowerBus
 {
+    public class Bus
+    {
+        public static void Trigger<T>(T value, BusManager manager = null) where T : class => (manager ?? BusManager.GlobalInstance).TriggerBus(value);
+    }
+    
     public class Bus<T> : IBus<T> where T : class
     {
         private BusManager _manager;
-        private Action<T> _onChange;
+        private BusEvent<T> _onChange;
         
-        public Bus(T initialValue = null, BusManager manager = null)
+        public Bus(BusManager manager = null)
         {
             _manager = manager ?? BusManager.GlobalInstance;
-            _manager.RegisterBus(this, initialValue);
+            _manager.RegisterBus(this);
         }
         
-        public Bus(Action<T> onChange, T initialValue = null, BusManager manager = null)
+        public Bus(BusEvent<T> onChange, BusManager manager = null)
         {
             _manager = manager ?? BusManager.GlobalInstance;
-            _manager.RegisterBus(this, initialValue);
+            _manager.RegisterBus(this);
             _onChange = onChange;
             OnChange += _onChange;
         }
         
         ~Bus()
         {
+            Dispose();
+        }
+        
+        public void Dispose()
+        {
             if (_onChange != null)
                 OnChange -= _onChange;
             _manager.UnregisterBus(this);
         }
-
-        public event Action<T> OnChange;
         
-        public void InvokeOnChange() => OnChange?.Invoke(Value);
+        public void Trigger(T value) => _manager.TriggerBus(value);
 
-        public T Value
-        {
-            get => _manager.GetBusValue(this);
-            set => _manager.SetBusValue(this, value);
-        }
+        public event BusEvent<T> OnChange;
         
-        public static implicit operator T(Bus<T> bus) => bus.Value;
+        public void InvokeOnChange(T value) => OnChange?.Invoke(value);
     }
 }

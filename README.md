@@ -9,6 +9,11 @@
   - [Inline Event Handling](#inline-event-handling)
   - [Initial Value](#initial-value)
   - [Bus Manager](#bus-manager)
+- [Global Trigger](#global-trigger)
+- [Game Object Bus](#game-object-bus)
+  - [Game Object Bus Global](#game-object-bus-global)
+  - [Game Object Bus Local](#game-object-bus-local)
+- [Dispose](#dispose)
 - [Install](#install)
   - [Install via Unity Package](#install-via-unity-package)
   - [Install via git URL](#install-via-git-url)
@@ -28,7 +33,7 @@ public class StringEvent
 
 var bus = new Bus<StringEvent>();
 bus.OnChange += e => Debug.Log(e.Value);
-bus.Value = new StringEvent { Value = "Hello World" };
+bus.Trigger(new StringEvent { Value = "Hello World" });
 ```
 
 ### Event Handling
@@ -50,7 +55,7 @@ You can create a bus by instantiating the `Bus` class.
   
 ```csharp
 var bus = new Bus<StringEvent>();
-bus.Value = new StringEvent { Value = "Hello World" };
+bus.Trigger(new StringEvent { Value = "Hello World" });
 ```
 
 #### Inline Event Handling
@@ -59,7 +64,7 @@ You can handle events inline by passing a lambda function or a method to the con
 
 ```csharp
 var bus = new Bus<StringEvent>(e => Debug.Log(e.Value));
-bus.Value = new StringEvent { Value = "Hello World" };
+bus.Trigger(new StringEvent { Value = "Hello World" });
 
 // or
 
@@ -69,7 +74,7 @@ void HandleEvent(StringEvent e)
 }
 
 var bus = new Bus<StringEvent>(HandleEvent);
-bus.Value = new StringEvent { Value = "Hello World" };
+bus.Trigger(new StringEvent { Value = "Hello World" });
 ```
 
 #### Initial Value
@@ -89,7 +94,47 @@ You can manage multiple buses using the `BusManager` class.
 ```csharp
 var manager = new BusManager();
 var bus = new Bus<StringEvent>(manager: manager);
-bus.Value = new StringEvent { Value = "Hello World" };
+bus.Trigger(new StringEvent { Value = "Hello World" });
+```
+
+### Global Trigger
+
+You can trigger an event globally by calling the `Trigger` method on the static bus class.
+
+```csharp
+Bus.Trigger<StringEvent>(new StringEvent { Value = "Hello World" });
+```
+
+### Game Object Bus
+
+You can access the bus from a game object.
+
+#### Game Object Bus Global
+
+You can access a bus from any game object.
+
+```csharp
+var bus = gameObject.Bus<StringEvent>();
+bus.Trigger(new StringEvent { Value = "Hello World" });
+```
+
+#### Game Object Bus Local
+
+You can access a bus from a game object that only triggers events locally.
+
+```csharp
+var bus = gameObject.LocalBus<StringEvent>();
+bus.Trigger(new StringEvent { Value = "Hello World" });
+```
+
+### Dispose
+
+You can dispose of the bus object by calling the `Dispose` method.
+
+> Note: You should always dispose of the bus when you no longer need it.
+
+```csharp
+bus.Dispose();
 ```
 
 ### Install

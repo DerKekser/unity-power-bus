@@ -1,4 +1,5 @@
-﻿using Kekser.PowerBus;
+﻿using System;
+using Kekser.PowerBus;
 using UnityEngine;
 
 namespace Kekser.Example
@@ -6,8 +7,6 @@ namespace Kekser.Example
     public class InputHandler : MonoBehaviour
     {
         private int _spawnCount;
-        
-        private Bus<SpawnEvent> _spawnEventBus = new Bus<SpawnEvent>();
         
         public void SetInput(string input)
         {
@@ -18,7 +17,7 @@ namespace Kekser.Example
         
         public void TriggerSpawn()
         {
-            _spawnEventBus.Value = new SpawnEvent { SpawnCount = _spawnCount };
+            Bus.Trigger(new SpawnEvent { SpawnCount = _spawnCount });
         }
     }
 }

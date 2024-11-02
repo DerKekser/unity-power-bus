@@ -2,8 +2,8 @@
 {
     public interface IBus<T> where T : class
     {
-        T Value { get; set; }
-        event System.Action<T> OnChange;
-        void InvokeOnChange();
+        void Trigger(T value);
+        event BusEvent<T> OnChange;
+        void InvokeOnChange(T value);
     }
 }

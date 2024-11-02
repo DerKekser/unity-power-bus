@@ -6,16 +6,15 @@ namespace Kekser.Example
 {
     public class BallDestroyer : MonoBehaviour
     {
-        private Bus<SpawnEvent> _spawnEventBus = new Bus<SpawnEvent>();
-
         private void OnEnable()
         {
-            _spawnEventBus.OnChange += OnSpawnEvent;
+            gameObject.Bus<SpawnEvent>().OnChange += OnSpawnEvent;
         }
         
         private void OnDisable()
         {
-            _spawnEventBus.OnChange -= OnSpawnEvent;
+            gameObject.Bus<SpawnEvent>().OnChange -= OnSpawnEvent;
+            gameObject.DisposeBus<SpawnEvent>();
         }
         
         private void OnSpawnEvent(SpawnEvent spawnEvent)
