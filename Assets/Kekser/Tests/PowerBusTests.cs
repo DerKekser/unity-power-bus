@@ -27,12 +27,12 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
-        public IEnumerator TestBusOnChange()
+        public IEnumerator TestBusOn()
         {
             var bus = new Bus<Event1>();
             bus.Trigger(new Event1 { StringValue = "Hello" });
             Event1 receivedValue = null;
-            bus.OnChange += (v) => receivedValue = v;
+            bus.On += (v) => receivedValue = v;
             bus.Trigger(new Event1 { StringValue = "World" });
             Assert.AreEqual("World", receivedValue.StringValue);
             bus.Dispose();
@@ -40,7 +40,7 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
-        public IEnumerator TestBusOnChangeInline()
+        public IEnumerator TestBusOnInline()
         {
             var bus = new Bus<Event1>((v) => Assert.AreEqual("Hello", v.StringValue));
             bus.Trigger(new Event1 { StringValue = "Hello" });
@@ -53,7 +53,7 @@ namespace Kekser.Tests
         {
             var manager = new BusManager();
             var bus = new Bus<Event1>(manager: manager);
-            bus.OnChange += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus.On += (v) => Assert.AreEqual("Hello", v.StringValue);
             bus.Trigger(new Event1 { StringValue = "Hello" });
             bus.Dispose();
             yield return null;
@@ -63,7 +63,7 @@ namespace Kekser.Tests
         public IEnumerator TestBusManagerGlobalInstance()
         {
             var bus = new Bus<Event1>();
-            bus.OnChange += v => Assert.AreEqual("Hello", v.StringValue);
+            bus.On += v => Assert.AreEqual("Hello", v.StringValue);
             bus.Trigger(new Event1 { StringValue = "Hello" });
             bus.Dispose();
             yield return null;
@@ -74,8 +74,8 @@ namespace Kekser.Tests
         {
             var bus1 = new Bus<Event1>();
             var bus2 = new Bus<Event1>();
-            bus1.OnChange += (v) => Assert.AreEqual("Hello", v.StringValue);
-            bus2.OnChange += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus1.On += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus2.On += (v) => Assert.AreEqual("Hello", v.StringValue);
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus1.Dispose();
             bus2.Dispose();
@@ -83,14 +83,14 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
-        public IEnumerator TestMultipleBusesOnChange()
+        public IEnumerator TestMultipleBusesOn()
         {
             var bus1 = new Bus<Event1>();
             var bus2 = new Bus<Event1>();
             Event1 receivedValue1 = null;
             Event1 receivedValue2 = null;
-            bus1.OnChange += (v) => receivedValue1 = v;
-            bus2.OnChange += (v) => receivedValue2 = v;
+            bus1.On += (v) => receivedValue1 = v;
+            bus2.On += (v) => receivedValue2 = v;
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus2.Trigger(new Event1 { StringValue = "World" });
             Assert.AreEqual("World", receivedValue1.StringValue);
@@ -105,8 +105,8 @@ namespace Kekser.Tests
         {
             var bus1 = new Bus<Event1>();
             var bus2 = new Bus<Event2>();
-            bus1.OnChange += (v) => Assert.AreEqual("Hello", v.StringValue);
-            bus2.OnChange += (v) => Assert.AreEqual(42, v.StringValue);
+            bus1.On += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus2.On += (v) => Assert.AreEqual(42, v.StringValue);
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus2.Trigger(new Event2 { StringValue = 42 });
             bus1.Dispose();
@@ -115,14 +115,14 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
-        public IEnumerator TestDifferentEventsOnChange()
+        public IEnumerator TestDifferentEventsOn()
         {
             var bus1 = new Bus<Event1>();
             var bus2 = new Bus<Event2>();
             Event1 receivedValue1 = null;
             Event2 receivedValue2 = null;
-            bus1.OnChange += (v) => receivedValue1 = v;
-            bus2.OnChange += (v) => receivedValue2 = v;
+            bus1.On += (v) => receivedValue1 = v;
+            bus2.On += (v) => receivedValue2 = v;
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus2.Trigger(new Event2 { StringValue = 42 });
             bus1.Trigger(new Event1 { StringValue = "World" });
@@ -141,8 +141,8 @@ namespace Kekser.Tests
             var manager2 = new BusManager();
             var bus1 = new Bus<Event1>(manager: manager1);
             var bus2 = new Bus<Event1>(manager: manager2);
-            bus1.OnChange += (v) => Assert.AreEqual("Hello", v.StringValue);
-            bus2.OnChange += (v) => Assert.AreEqual("World", v.StringValue);
+            bus1.On += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus2.On += (v) => Assert.AreEqual("World", v.StringValue);
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus2.Trigger(new Event1 { StringValue = "World" });
             bus1.Dispose();
@@ -151,7 +151,7 @@ namespace Kekser.Tests
         }
         
         [UnityTest]
-        public IEnumerator TestDifferentBusManagersOnChange()
+        public IEnumerator TestDifferentBusManagersOn()
         {
             var manager1 = new BusManager();
             var manager2 = new BusManager();
@@ -159,8 +159,8 @@ namespace Kekser.Tests
             var bus2 = new Bus<Event1>(manager: manager2);
             Event1 receivedValue1 = null;
             Event1 receivedValue2 = null;
-            bus1.OnChange += (v) => receivedValue1 = v;
-            bus2.OnChange += (v) => receivedValue2 = v;
+            bus1.On += (v) => receivedValue1 = v;
+            bus2.On += (v) => receivedValue2 = v;
             bus1.Trigger(new Event1 { StringValue = "Hello" });
             bus2.Trigger(new Event1 { StringValue = "World" });
             bus1.Trigger(new Event1 { StringValue = "Changed" });

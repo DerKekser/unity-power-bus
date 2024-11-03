@@ -8,12 +8,12 @@ namespace Kekser.Example
     {
         private void OnEnable()
         {
-            gameObject.Bus<SpawnEvent>().OnChange += OnSpawnEvent;
+            gameObject.Bus<SpawnEvent>().On += OnSpawnEvent;
         }
         
         private void OnDisable()
         {
-            gameObject.Bus<SpawnEvent>().OnChange -= OnSpawnEvent;
+            gameObject.Bus<SpawnEvent>().On -= OnSpawnEvent;
             gameObject.DisposeBus<SpawnEvent>();
         }
         

@@ -32,13 +32,13 @@ public class StringEvent
 }
 
 var bus = new Bus<StringEvent>();
-bus.OnChange += e => Debug.Log(e.Value);
+bus.On += e => Debug.Log(e.Value);
 bus.Trigger(new StringEvent { Value = "Hello World" });
 ```
 
 ### Event Handling
 
-You can handle events by subscribing to the `OnChange` event of the bus.
+You can handle events by subscribing to the `On` event of the bus.
 
 ```csharp
 void HandleEvent(StringEvent e)
@@ -46,7 +46,7 @@ void HandleEvent(StringEvent e)
     Debug.Log(e.Value);
 }
 
-bus.OnChange += HandleEvent;
+bus.On += HandleEvent;
 ```
 
 ### Bus Creation

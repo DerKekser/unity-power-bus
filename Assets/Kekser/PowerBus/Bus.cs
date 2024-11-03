@@ -23,7 +23,7 @@ namespace Kekser.PowerBus
             _manager = manager ?? BusManager.GlobalInstance;
             _manager.RegisterBus(this);
             _onChange = onChange;
-            OnChange += _onChange;
+            On += _onChange;
         }
         
         ~Bus()
@@ -34,14 +34,21 @@ namespace Kekser.PowerBus
         public void Dispose()
         {
             if (_onChange != null)
-                OnChange -= _onChange;
+                On -= _onChange;
             _manager.UnregisterBus(this);
         }
         
-        public void Trigger(T value) => _manager.TriggerBus(value);
+        public void Trigger(T value)
+        {
+            _manager.TriggerBus(value);
+            Listener?.Invoke(value);
+        }
 
-        public event BusEvent<T> OnChange;
+        public event BusEvent<T> On;
+
+        public event BusEvent<T> Listener; 
         
-        public void InvokeOnChange(T value) => OnChange?.Invoke(value);
+        
+        public void InvokeOnChange(T value) => On?.Invoke(value);
     }
 }
