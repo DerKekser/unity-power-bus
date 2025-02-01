@@ -171,5 +171,17 @@ namespace Kekser.Tests
             bus2.Dispose();
             yield return null;
         }
+        
+        [UnityTest]
+        public IEnumerator TestBusFactory()
+        {
+            var bus1 = BusFactory<Event1>.CreateBus();
+            var bus2 = BusFactory<Event1>.CreateBus();
+            bus1.On += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus2.On += (v) => Assert.AreEqual("Hello", v.StringValue);
+            bus1.Trigger(new Event1 { StringValue = "Hello" });
+            BusFactory<Event1>.DisposeBus();
+            yield return null;
+        }
     }
 }
